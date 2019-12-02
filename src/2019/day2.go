@@ -29,9 +29,29 @@ func day2() {
 
 	input := getIntCode(line)
 	fmt.Printf("Input IntCode :%v", input)
+	found := false
 
-	output := getCalculatedIntCode(input)
-	fmt.Printf("\n\nOutput IntCode :%v", output)
+	for i := 0; i <= 99; i++ {
+		if found {
+			break
+		}
+
+		for j := 0; j <= 99; j++ {
+			temp := make([]int, len(input))
+			copy(temp, input)
+
+			temp[1] = i
+			temp[2] = j
+
+			output := getCalculatedIntCode(temp)
+
+			if output[0] == 19690720 {
+				fmt.Printf("Noun is :%v, Verb is :%v", i, j)
+				found = true
+				break
+			}
+		}
+	}
 }
 
 func getIntCode(inputLine string) []int {
@@ -76,7 +96,7 @@ func getCalculatedIntCode(intCode []int) []int {
 				intCode[thirdParameter] = intCode[firstParameter] * intCode[secondParameter]
 			}
 		} else {
-			log.Fatalf("\n\nInvalid OpCode :%v", opCode)
+			fmt.Printf("\n\nInvalid OpCode :%v", opCode)
 			break
 		}
 
