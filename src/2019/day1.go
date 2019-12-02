@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	file, err := os.OpenFile("./2019/input/day1.txt", os.O_RDONLY, os.ModePerm)
+	file, err := os.OpenFile("./input/2019/day1.txt", os.O_RDONLY, os.ModePerm)
 
 	if err != nil {
 		log.Fatalf("Open file error: %v", err)
