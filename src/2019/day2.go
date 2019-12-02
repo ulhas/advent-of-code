@@ -66,14 +66,14 @@ func getCalculatedIntCode(intCode []int) []int {
 		}
 
 		if opCode == 1 || opCode == 2 {
-			firstPosition := intCode[position+1]
-			secondPosition := intCode[position+2]
-			resultPosition := intCode[position+3]
+			firstParameter := intCode[position+1]
+			secondParameter := intCode[position+2]
+			thirdParameter := intCode[position+3]
 
 			if opCode == 1 {
-				intCode[resultPosition] = intCode[firstPosition] + intCode[secondPosition]
+				intCode[thirdParameter] = intCode[firstParameter] + intCode[secondParameter]
 			} else {
-				intCode[resultPosition] = intCode[firstPosition] * intCode[secondPosition]
+				intCode[thirdParameter] = intCode[firstParameter] * intCode[secondParameter]
 			}
 		} else {
 			log.Fatalf("\n\nInvalid OpCode :%v", opCode)
