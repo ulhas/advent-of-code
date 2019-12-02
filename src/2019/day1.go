@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func main() {
+func day1() {
 	file, err := os.OpenFile("./input/2019/day1.txt", os.O_RDONLY, os.ModePerm)
 
 	if err != nil {
@@ -46,7 +46,9 @@ func main() {
 		totalFuel += getFuel(number)
 	}
 
-	fmt.Printf("Total Fuel equired: %v", totalFuel)
+	fmt.Println("********** Day 1 **********")
+	fmt.Printf("Total Fuel equired: %v \n", totalFuel)
+	fmt.Println("********** End Day 1 **********")
 }
 
 func getFuel(mass int) int {
