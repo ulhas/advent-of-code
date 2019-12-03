@@ -11,7 +11,7 @@ import (
 )
 
 type Coordinate struct {
-	x, y int
+	x, y, step int
 }
 
 type CoordinateSet struct {
@@ -32,6 +32,7 @@ func day3() {
 	index := 0
 	traversed := []Coordinate{}
 	minManhattanDistance := 35000
+	minStepNumber := 60000
 
 	for {
 		line, err := reader.ReadString('\n')
@@ -47,21 +48,28 @@ func day3() {
 
 		trimmedLine := strings.TrimSpace(line)
 		path := strings.Split(trimmedLine, ",")
-		current := Coordinate{0, 0}
+		current := Coordinate{0, 0, 0}
+		stepNumber := 0
 
 		for _, step := range path {
 			direction := getDirection(step)
 			distance := getDistance(step)
 
 			for j := 1; j <= distance; j++ {
-				next := getNextCoordinate(current, direction)
+				stepNumber += 1
+				next := getNextCoordinate(current, direction, stepNumber)
+				c, success := contains(traversed, next)
 
 				if index == 0 {
-					traversed = append(traversed, next)
+					if !success {
+						traversed = append(traversed, next)
+					}
 				} else {
-					if contains(traversed, next) {
+					if success {
 						manhattanDistance := getManhattanDistance(next)
 						minManhattanDistance = min(manhattanDistance, minManhattanDistance)
+						numberOfStep := c.step + next.step
+						minStepNumber = min(numberOfStep, minStepNumber)
 					}
 				}
 
@@ -72,7 +80,9 @@ func day3() {
 		index++
 	}
 
-	fmt.Printf("Min Manhattan Distance :%v", minManhattanDistance)
+	fmt.Printf("\n\nMin Manhattan Distance :%v", minManhattanDistance)
+	fmt.Printf("\n\nMin Step Distance :%v", minStepNumber)
+	fmt.Printf("\n\nEnd")
 }
 
 func min(x, y int) int {
@@ -82,18 +92,18 @@ func min(x, y int) int {
 	return x
 }
 
-func contains(coordinates []Coordinate, coordinate Coordinate) bool {
+func contains(coordinates []Coordinate, coordinate Coordinate) (ret Coordinate, success bool) {
 	for _, c := range coordinates {
 		if c.x == coordinate.x && c.y == coordinate.y {
-			return true
+			return c, true
 		}
 	}
 
-	return false
+	return Coordinate{0, 0, 0}, false
 }
 
-func getNextCoordinate(current Coordinate, direction string) Coordinate {
-	next := Coordinate{current.x, current.y}
+func getNextCoordinate(current Coordinate, direction string, step int) Coordinate {
+	next := Coordinate{current.x, current.y, step}
 
 	if direction == "R" {
 		next.x += 1
