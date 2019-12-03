@@ -14,10 +14,6 @@ type Coordinate struct {
 	x, y, step int
 }
 
-type CoordinateSet struct {
-	coordinates []Coordinate
-}
-
 func day3() {
 	file, err := os.OpenFile("./input/2019/day3.txt", os.O_RDONLY, os.ModePerm)
 
