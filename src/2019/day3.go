@@ -26,7 +26,7 @@ func day3() {
 
 	reader := bufio.NewReader(file)
 	index := 0
-	traversed := []Coordinate{}
+	traversed := make(map[string]int)
 	minManhattanDistance := 35000
 	minStepNumber := 60000
 
@@ -54,17 +54,18 @@ func day3() {
 			for j := 1; j <= distance; j++ {
 				stepNumber += 1
 				next := getNextCoordinate(current, direction, stepNumber)
-				c, success := contains(traversed, next)
+				key := next.getKey()
+				step, found := traversed[key]
 
 				if index == 0 {
-					if !success {
-						traversed = append(traversed, next)
+					if !found {
+						traversed[key] = next.step
 					}
 				} else {
-					if success {
+					if found {
 						manhattanDistance := getManhattanDistance(next)
 						minManhattanDistance = min(manhattanDistance, minManhattanDistance)
-						numberOfStep := c.step + next.step
+						numberOfStep := step + next.step
 						minStepNumber = min(numberOfStep, minStepNumber)
 					}
 				}
@@ -140,4 +141,10 @@ func abs(x int) int {
 	}
 
 	return x
+}
+
+func (coordinate Coordinate) getKey() string {
+	x := strconv.Itoa(coordinate.x)
+	y := strconv.Itoa(coordinate.y)
+	return x + "," + y
 }
