@@ -45,9 +45,7 @@ func day1() {
 		totalFuel += getFuel(number)
 	}
 
-	log.Println("********** Day 1 **********")
-	log.Printf("Total Fuel equired: %v \n", totalFuel)
-	log.Println("********** End Day 1 **********")
+	log.Printf("Total Fuel required: %v \n", totalFuel)
 }
 
 func getFuel(mass int) int {

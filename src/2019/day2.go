@@ -27,7 +27,6 @@ func day2() {
 	}
 
 	input := getIntCode(line)
-	log.Printf("Input IntCode :%v", input)
 	found := false
 
 	for i := 0; i <= 99; i++ {
@@ -62,7 +61,7 @@ func getIntCode(inputLine string) []int {
 		converted, err := strconv.Atoi(input)
 
 		if err != nil {
-			log.Fatalf("\n\nError converting input : %v", err)
+			log.Fatalf("Error converting input : %v", err)
 			continue
 		}
 
@@ -80,7 +79,6 @@ func getCalculatedIntCode(intCode []int) []int {
 		opCode := intCode[position]
 
 		if opCode == 99 {
-			log.Print("\n\nOpcode 99 encountered. Aborting")
 			return intCode
 		}
 
@@ -95,8 +93,7 @@ func getCalculatedIntCode(intCode []int) []int {
 				intCode[thirdParameter] = intCode[firstParameter] * intCode[secondParameter]
 			}
 		} else {
-			log.Printf("\n\nInvalid OpCode :%v", opCode)
-			break
+			log.Fatalf("Invalid OpCode :%v", opCode)
 		}
 
 		position += 4

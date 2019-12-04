@@ -76,8 +76,8 @@ func day3() {
 		index++
 	}
 
-	log.Printf("\n\nMin Manhattan Distance :%v", minManhattanDistance)
-	log.Printf("\n\nMin Step Distance :%v", minStepNumber)
+	log.Printf("Min Manhattan Distance :%v", minManhattanDistance)
+	log.Printf("Min Step Distance :%v", minStepNumber)
 }
 
 func min(x, y int) int {
