@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -77,9 +76,9 @@ func day3() {
 		index++
 	}
 
-	fmt.Printf("\n\nMin Manhattan Distance :%v", minManhattanDistance)
-	fmt.Printf("\n\nMin Step Distance :%v", minStepNumber)
-	fmt.Printf("\n\nEnd")
+	log.Printf("\n\nMin Manhattan Distance :%v", minManhattanDistance)
+	log.Printf("\n\nMin Step Distance :%v", minStepNumber)
+	log.Printf("\n\nEnd")
 }
 
 func min(x, y int) int {

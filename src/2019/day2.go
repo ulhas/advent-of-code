@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -28,7 +27,7 @@ func day2() {
 	}
 
 	input := getIntCode(line)
-	fmt.Printf("Input IntCode :%v", input)
+	log.Printf("Input IntCode :%v", input)
 	found := false
 
 	for i := 0; i <= 99; i++ {
@@ -46,7 +45,7 @@ func day2() {
 			output := getCalculatedIntCode(temp)
 
 			if output[0] == 19690720 {
-				fmt.Printf("Noun is :%v, Verb is :%v", i, j)
+				log.Printf("Noun is :%v, Verb is :%v", i, j)
 				found = true
 				break
 			}
@@ -81,7 +80,7 @@ func getCalculatedIntCode(intCode []int) []int {
 		opCode := intCode[position]
 
 		if opCode == 99 {
-			fmt.Print("\n\nOpcode 99 encountered. Aborting")
+			log.Print("\n\nOpcode 99 encountered. Aborting")
 			return intCode
 		}
 
@@ -96,7 +95,7 @@ func getCalculatedIntCode(intCode []int) []int {
 				intCode[thirdParameter] = intCode[firstParameter] * intCode[secondParameter]
 			}
 		} else {
-			fmt.Printf("\n\nInvalid OpCode :%v", opCode)
+			log.Printf("\n\nInvalid OpCode :%v", opCode)
 			break
 		}
 

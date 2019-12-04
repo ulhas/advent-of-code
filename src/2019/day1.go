@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -46,9 +45,9 @@ func day1() {
 		totalFuel += getFuel(number)
 	}
 
-	fmt.Println("********** Day 1 **********")
-	fmt.Printf("Total Fuel equired: %v \n", totalFuel)
-	fmt.Println("********** End Day 1 **********")
+	log.Println("********** Day 1 **********")
+	log.Printf("Total Fuel equired: %v \n", totalFuel)
+	log.Println("********** End Day 1 **********")
 }
 
 func getFuel(mass int) int {
