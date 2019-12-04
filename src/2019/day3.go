@@ -89,16 +89,6 @@ func min(x, y int) int {
 	return x
 }
 
-func contains(coordinates []Coordinate, coordinate Coordinate) (ret Coordinate, success bool) {
-	for _, c := range coordinates {
-		if c.x == coordinate.x && c.y == coordinate.y {
-			return c, true
-		}
-	}
-
-	return Coordinate{0, 0, 0}, false
-}
-
 func getNextCoordinate(current Coordinate, direction string, step int) Coordinate {
 	next := Coordinate{current.x, current.y, step}
 
