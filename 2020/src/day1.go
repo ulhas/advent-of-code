@@ -64,8 +64,8 @@ func find(entries []int) {
 			entryJ := entries[j]
 			log.Printf("J %v", entryJ)
 
-			if (entryJ + entryI >= 2020) {
-				j += 1
+			if entryJ+entryI >= 2020 {
+				j++
 				continue
 			}
 
@@ -74,18 +74,18 @@ func find(entries []int) {
 			for k < length {
 				entryK := entries[k]
 				log.Printf("K %v", entryK)
-				
-				if (entryI + entryJ + entryK == 2020) {
-					log.Printf("Result %v", entryI * entryJ * entryK)
+
+				if entryI+entryJ+entryK == 2020 {
+					log.Printf("Result %v", entryI*entryJ*entryK)
 					return
 				}
 
-				k += 1
+				k++
 			}
 
-			j += 1
+			j++
 		}
 
-		i += 1
+		i++
 	}
 }
