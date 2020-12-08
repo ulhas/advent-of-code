@@ -8,7 +8,7 @@ import (
 func main() {
 	start := time.Now()
 
-	day6()
+	day8()
 
 	elapsed := time.Since(start)
 	log.Printf("--- Time taken %s ---", elapsed)
