@@ -57,9 +57,6 @@ func calculateRating(entries []string) {
 		log.Fatal("Co2 Scrubber Rating")
 	}
 
-	log.Print(oxygenGeneratorRating)
-	log.Print(co2SrubberRating)
-
 	log.Print(oxygenGeneratorRating * co2SrubberRating)
 }
 
@@ -100,9 +97,6 @@ func getRating(entries []string, shouldFilterByMostCommon bool, position int) st
 	bitCount := getBitCount(entries)
 	bitCountAtPosition := bitCount[position]
 
-	log.Printf("--- %v", shouldFilterByMostCommon)
-	log.Printf("BitCount %v length %v", bitCount, length)
-
 	var filterBitAtPosition string
 
 	if shouldFilterByMostCommon {
@@ -118,8 +112,6 @@ func getRating(entries []string, shouldFilterByMostCommon bool, position int) st
 			filterBitAtPosition = "0"
 		}
 	}
-
-	log.Printf("BitCount at %v %v %v", position, bitCountAtPosition, filterBitAtPosition)
 
 	filteredEntries := []string{}
 	i := 0
