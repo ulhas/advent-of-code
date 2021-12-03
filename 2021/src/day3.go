@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -39,9 +38,29 @@ func Day3() {
 		entries = append(entries, trimmed)
 	}
 
-	bitCount := getBitCount(entries)
-	log.Print(bitCount)
-	solveBitCount(len(entries), bitCount)
+	calculateRating(entries)
+}
+
+func calculateRating(entries []string) {
+	oxygenGeneratorRatingInBinary := getRating(entries, true, 0)
+	co2SrubberRatingInBinary := getRating(entries, false, 0)
+
+	oxygenGeneratorRating, err := strconv.ParseInt(oxygenGeneratorRatingInBinary, 2, 16)
+
+	if err != nil {
+		log.Fatal("Oxygen generate rating error")
+	}
+
+	co2SrubberRating, err := strconv.ParseInt(co2SrubberRatingInBinary, 2, 16)
+
+	if err != nil {
+		log.Fatal("Co2 Scrubber Rating")
+	}
+
+	log.Print(oxygenGeneratorRating)
+	log.Print(co2SrubberRating)
+
+	log.Print(oxygenGeneratorRating * co2SrubberRating)
 }
 
 func getBitCount(entries []string) [12]int {
@@ -71,45 +90,49 @@ func getBitCount(entries []string) [12]int {
 	return bitCount
 }
 
-func solveBitCount(length int, bitCount [12]int) {
-	mostCommonBits := [12]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	leastCommonBits := [12]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+func getRating(entries []string, shouldFilterByMostCommon bool, position int) string {
+	length := len(entries)
+
+	if length == 1 {
+		return entries[0]
+	}
+
+	bitCount := getBitCount(entries)
+	bitCountAtPosition := bitCount[position]
+
+	log.Printf("--- %v", shouldFilterByMostCommon)
+	log.Printf("BitCount %v length %v", bitCount, length)
+
+	var filterBitAtPosition string
+
+	if shouldFilterByMostCommon {
+		if bitCountAtPosition >= length/2 {
+			filterBitAtPosition = "1"
+		} else {
+			filterBitAtPosition = "0"
+		}
+	} else {
+		if bitCountAtPosition < length/2 {
+			filterBitAtPosition = "1"
+		} else {
+			filterBitAtPosition = "0"
+		}
+	}
+
+	log.Printf("BitCount at %v %v %v", position, bitCountAtPosition, filterBitAtPosition)
+
+	filteredEntries := []string{}
 	i := 0
 
-	for i < 12 {
-		isMost := bitCount[i] > length/2
-		if isMost {
-			mostCommonBits[i] = 1
-		} else {
-			leastCommonBits[i] = 1
+	for i < len(entries) {
+		entry := entries[i]
+
+		if string(entry[position]) == filterBitAtPosition {
+			filteredEntries = append(filteredEntries, entry)
 		}
+
 		i += 1
 	}
 
-	log.Print(mostCommonBits)
-	log.Print(leastCommonBits)
-
-	gammaRateBit := ""
-	epsilonRateBit := ""
-	i = 0
-
-	for i < 12 {
-		gammaRateBit += fmt.Sprint(mostCommonBits[i])
-		epsilonRateBit += fmt.Sprint(leastCommonBits[i])
-		i += 1
-	}
-
-	gammaRate, err := strconv.ParseInt(gammaRateBit, 2, 16)
-
-	if err != nil {
-		log.Fatal("Gamma rate error")
-	}
-
-	epsilonRate, err := strconv.ParseInt(epsilonRateBit, 2, 16)
-
-	if err != nil {
-		log.Fatal("Epsilon rate error")
-	}
-
-	log.Print(gammaRate * epsilonRate)
+	return getRating(filteredEntries, shouldFilterByMostCommon, position+1)
 }
