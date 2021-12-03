@@ -96,7 +96,30 @@ func getRating(entries []string, shouldFilterByMostCommon bool, position int) st
 
 	bitCount := getBitCount(entries)
 	bitCountAtPosition := bitCount[position]
+	filterBitAtPosition := getFilterBit(position, shouldFilterByMostCommon, bitCountAtPosition, length)
+	filteredEntries := getFilteredEntries(entries, position, filterBitAtPosition)
 
+	return getRating(filteredEntries, shouldFilterByMostCommon, position+1)
+}
+
+func getFilteredEntries(entries []string, position int, filterBitAtPosition string) []string {
+	filteredEntries := []string{}
+	i := 0
+
+	for i < len(entries) {
+		entry := entries[i]
+
+		if string(entry[position]) == filterBitAtPosition {
+			filteredEntries = append(filteredEntries, entry)
+		}
+
+		i += 1
+	}
+
+	return filteredEntries
+}
+
+func getFilterBit(position int, shouldFilterByMostCommon bool, bitCountAtPosition int, length int) string {
 	var filterBitAtPosition string
 
 	if shouldFilterByMostCommon {
@@ -113,18 +136,5 @@ func getRating(entries []string, shouldFilterByMostCommon bool, position int) st
 		}
 	}
 
-	filteredEntries := []string{}
-	i := 0
-
-	for i < len(entries) {
-		entry := entries[i]
-
-		if string(entry[position]) == filterBitAtPosition {
-			filteredEntries = append(filteredEntries, entry)
-		}
-
-		i += 1
-	}
-
-	return getRating(filteredEntries, shouldFilterByMostCommon, position+1)
+	return filterBitAtPosition
 }
