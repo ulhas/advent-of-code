@@ -141,19 +141,15 @@ func (game *Game) remove(index int) {
 }
 
 func (game Game) start() {
-	var lastWinner Board
-	var lastNumber string
+	lastWinningScore := 0
 
 	for {
 		number, err := game.pop()
 
 		if err != nil {
-			log.Print(err)
-			finalWinner(lastWinner, lastNumber)
 			break
 		}
 
-		lastNumber = *number
 		game.mark(*number)
 		index, err := game.getWinner()
 
@@ -163,28 +159,26 @@ func (game Game) start() {
 
 		board := game.boards[*index]
 		game.remove(*index)
-		lastWinner = *board
-		log.Print(len(game.boards))
+		lastWinningScore = board.getTotalScore(*number)
 
 		if 0 == len(game.boards) {
-			finalWinner(*board, *number)
 			break
 		}
 	}
+
+	log.Printf("Total Score %v", lastWinningScore)
 }
 
-func finalWinner(board Board, number string) {
-	log.Print(board.cells, number)
+func (board Board) getTotalScore(number string) int {
 	score := board.getScore()
 	num, convError := strconv.Atoi(number)
 
 	if convError != nil {
 		log.Fatalf("Conversion error: %v", convError)
-		return
 	}
 
 	score *= num
-	log.Printf("Total Score %v", score)
+	return score
 }
 
 func getEmptyBoard() [5][5]Cell {
@@ -235,6 +229,21 @@ func (game *Game) pop() (*string, error) {
 	value, input := game.input[0], game.input[1:]
 	game.input = input
 	return &value, nil
+}
+
+func (board Board) print() {
+	log.Printf("Board : %v", board.cells)
+}
+
+func (game Game) print() {
+	i := 0
+
+	for i < len(game.boards) {
+		log.Printf("Board #%d: %v", i, game.boards[i].cells)
+		i += 1
+	}
+
+	log.Print("---")
 }
 
 func parseColumn(row string) []string {
@@ -289,4 +298,21 @@ func Day4() {
 
 	game := createGame(entries)
 	game.start()
+	test()
+}
+
+func test() {
+	board := Board{cells: getTest()}
+	log.Print(board.isWinner())
+	board.print()
+}
+
+func getTest() [5][5]Cell {
+	return [5][5]Cell{
+		{Cell{number: "0", marked: true}, Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}},
+		{Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}},
+		{Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}},
+		{Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: false}},
+		{Cell{number: "0", marked: true}, Cell{number: "0", marked: true}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}},
+	}
 }
