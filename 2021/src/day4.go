@@ -46,8 +46,6 @@ func (board *Board) isWinner() bool {
 			j += 1
 		}
 
-		log.Print(rowCount, columnCount)
-
 		if rowCount == 5 || columnCount == 5 {
 			return true
 		}
@@ -120,14 +118,14 @@ func (game *Game) mark(number string) {
 	}
 }
 
-func (game *Game) getWinner() (*Board, error) {
+func (game *Game) getWinner() (*int, error) {
 	i := 0
 
 	for i < len(game.boards) {
 		board := game.boards[i]
 
 		if board.isWinner() {
-			return board, nil
+			return &i, nil
 		}
 
 		i += 1
@@ -136,34 +134,57 @@ func (game *Game) getWinner() (*Board, error) {
 	return nil, errors.New("no_winner")
 }
 
+func (game *Game) remove(index int) {
+	boards := game.boards
+	boards[index] = boards[len(boards)-1]
+	game.boards = boards[:len(boards)-1]
+}
+
 func (game Game) start() {
+	var lastWinner Board
+	var lastNumber string
+
 	for {
 		number, err := game.pop()
 
 		if err != nil {
+			log.Print(err)
+			finalWinner(lastWinner, lastNumber)
 			break
 		}
 
+		lastNumber = *number
 		game.mark(*number)
-		board, err := game.getWinner()
+		index, err := game.getWinner()
 
 		if err != nil {
 			continue
 		}
 
-		score := board.getScore()
+		board := game.boards[*index]
+		game.remove(*index)
+		lastWinner = *board
+		log.Print(len(game.boards))
 
-		num, convError := strconv.Atoi(*number)
-
-		if convError != nil {
-			log.Fatalf("Conversion error: %v", convError)
+		if 0 == len(game.boards) {
+			finalWinner(*board, *number)
 			break
 		}
-
-		score *= num
-		log.Printf("Total Score %v", score)
-		break
 	}
+}
+
+func finalWinner(board Board, number string) {
+	log.Print(board.cells, number)
+	score := board.getScore()
+	num, convError := strconv.Atoi(number)
+
+	if convError != nil {
+		log.Fatalf("Conversion error: %v", convError)
+		return
+	}
+
+	score *= num
+	log.Printf("Total Score %v", score)
 }
 
 func getEmptyBoard() [5][5]Cell {
