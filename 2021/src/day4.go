@@ -298,7 +298,7 @@ func Day4() {
 
 	game := createGame(entries)
 	game.start()
-	test()
+	// test()
 }
 
 func test() {
