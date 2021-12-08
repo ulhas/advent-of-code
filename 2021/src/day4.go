@@ -16,7 +16,8 @@ type Cell struct {
 }
 
 type Board struct {
-	cells [5][5]Cell
+	cells  [5][5]Cell
+	winner bool
 }
 
 type Game struct {
@@ -113,31 +114,48 @@ func (game *Game) mark(number string) {
 
 	for i < len(game.boards) {
 		board := game.boards[i]
-		board.mark(number)
+
+		if !board.winner {
+			board.mark(number)
+		}
+
 		i += 1
 	}
 }
 
-func (game *Game) getWinner() (*int, error) {
+func (game *Game) getWinners() []int {
+	i := 0
+	indexes := []int{}
+
+	for i < len(game.boards) {
+		board := game.boards[i]
+
+		if board.isWinner() && !board.winner {
+			board.winner = true
+			indexes = append(indexes, i)
+		}
+
+		game.boards[i] = board
+		i += 1
+	}
+
+	return indexes
+}
+
+func (game *Game) allBoardsWon() bool {
 	i := 0
 
 	for i < len(game.boards) {
 		board := game.boards[i]
 
-		if board.isWinner() {
-			return &i, nil
+		if !board.isWinner() {
+			return false
 		}
 
 		i += 1
 	}
 
-	return nil, errors.New("no_winner")
-}
-
-func (game *Game) remove(index int) {
-	boards := game.boards
-	boards[index] = boards[len(boards)-1]
-	game.boards = boards[:len(boards)-1]
+	return true
 }
 
 func (game Game) start() {
@@ -151,17 +169,23 @@ func (game Game) start() {
 		}
 
 		game.mark(*number)
-		index, err := game.getWinner()
+		indices := game.getWinners()
 
-		if err != nil {
+		if len(indices) == 0 {
 			continue
 		}
 
-		board := game.boards[*index]
-		game.remove(*index)
-		lastWinningScore = board.getTotalScore(*number)
+		i := 0
+		log.Printf("Indices %d", len(indices))
 
-		if 0 == len(game.boards) {
+		for i < len(indices) {
+			board := game.boards[i]
+			lastWinningScore = board.getTotalScore(*number)
+			i += 1
+		}
+
+		if game.allBoardsWon() {
+			log.Print("All Boards won")
 			break
 		}
 	}
@@ -170,6 +194,8 @@ func (game Game) start() {
 }
 
 func (board Board) getTotalScore(number string) int {
+	board.print()
+	log.Printf("Number %v", number)
 	score := board.getScore()
 	num, convError := strconv.Atoi(number)
 
@@ -177,8 +203,7 @@ func (board Board) getTotalScore(number string) int {
 		log.Fatalf("Conversion error: %v", convError)
 	}
 
-	score *= num
-	return score
+	return score * num
 }
 
 func getEmptyBoard() [5][5]Cell {
@@ -208,7 +233,7 @@ func createGame(entries []string) Game {
 		}
 
 		if row == 4 {
-			boards = append(boards, &Board{cells: cells})
+			boards = append(boards, &Board{cells: cells, winner: false})
 			cells = getEmptyBoard()
 			row = 0
 		} else {
@@ -298,21 +323,4 @@ func Day4() {
 
 	game := createGame(entries)
 	game.start()
-	// test()
-}
-
-func test() {
-	board := Board{cells: getTest()}
-	log.Print(board.isWinner())
-	board.print()
-}
-
-func getTest() [5][5]Cell {
-	return [5][5]Cell{
-		{Cell{number: "0", marked: true}, Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}},
-		{Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}},
-		{Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}},
-		{Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: false}},
-		{Cell{number: "0", marked: true}, Cell{number: "0", marked: true}, Cell{number: "0", marked: false}, Cell{number: "0", marked: true}, Cell{number: "0", marked: true}},
-	}
 }
