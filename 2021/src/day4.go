@@ -180,7 +180,8 @@ func (game Game) start() {
 		log.Printf("Indices %d", len(indices))
 
 		for i < len(indices) {
-			board := game.boards[i]
+			index := indices[i]
+			board := game.boards[index]
 			lastWinningScore = board.getTotalScore(*number)
 			i += 1
 		}
