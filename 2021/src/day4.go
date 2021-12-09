@@ -165,6 +165,7 @@ func (game Game) start() {
 		number, err := game.pop()
 
 		if err != nil {
+			log.Print("Input over")
 			break
 		}
 
