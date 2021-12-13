@@ -71,18 +71,18 @@ func Day13() {
 
 	i = 0
 
-	for i < 40 {
+	for i < 6 {
 		j := 0
 
-		for j < 10 {
-			key := fmt.Sprintf("%d,%d", i, j)
+		for j < 40 {
+			key := fmt.Sprintf("%d,%d", j, i)
 
 			_, exists := dots[key]
 
 			if !exists {
-				fmt.Print(".  ")
+				fmt.Print(".")
 			} else {
-				fmt.Print("#  ")
+				fmt.Print("#")
 			}
 
 			j += 1
