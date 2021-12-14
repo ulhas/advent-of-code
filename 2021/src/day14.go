@@ -57,7 +57,7 @@ func Day14() {
 	polymer := createPolymer(template)
 
 	i = 0
-	for i < 40 {
+	for i < 400 {
 		polymer = polymer.step(pairInsertions)
 		i += 1
 	}
