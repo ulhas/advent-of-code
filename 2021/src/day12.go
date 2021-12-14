@@ -15,6 +15,7 @@ type Cave struct {
 
 type Map struct {
 	start *Cave
+	caves []*Cave
 }
 
 func (cave *Cave) addCave(neighbor *Cave) {
@@ -23,6 +24,14 @@ func (cave *Cave) addCave(neighbor *Cave) {
 
 func (cave *Cave) isSmall() bool {
 	return strings.ToLower(cave.name) == cave.name
+}
+
+func (cave *Cave) isStart() bool {
+	return cave.name == "start"
+}
+
+func (cave *Cave) isEnd() bool {
+	return cave.name == "end"
 }
 
 func Day12() {
@@ -55,7 +64,7 @@ func Day12() {
 	}
 
 	caveMap := createMap(entries)
-	log.Print(caveMap)
+	caveMap.print()
 }
 
 func createMap(entries []string) Map {
@@ -98,4 +107,41 @@ func createMap(entries []string) Map {
 	}
 
 	return Map{start: start}
+}
+
+func (caveMap *Map) print() {
+	visited := map[string]bool{"can_visit": true}
+	path := []string{}
+	count := 0
+	caveMap.printFrom(caveMap.start, visited, path, &count)
+	log.Print(count)
+}
+
+func (caveMap *Map) printFrom(cave *Cave, visited map[string]bool, path []string, count *int) {
+	if cave.isSmall() || cave.isStart() || cave.isEnd() {
+		visited[cave.name] = true
+	}
+
+	path = append(path, cave.name)
+
+	if cave.name == "end" {
+		*count += 1
+		log.Print(path)
+	} else {
+		i := 0
+
+		for i < len(cave.adjacent) {
+			adj := cave.adjacent[i]
+			_, exists := visited[adj.name]
+
+			if !exists {
+				caveMap.printFrom(adj, visited, path, count)
+			}
+
+			i += 1
+		}
+	}
+
+	path = path[:1]
+	delete(visited, cave.name)
 }
