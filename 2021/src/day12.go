@@ -110,23 +110,30 @@ func createMap(entries []string) Map {
 }
 
 func (caveMap *Map) print() {
-	visited := map[string]bool{"can_visit": true}
+	visited := make(map[string]int)
 	path := []string{}
 	count := 0
 	caveMap.printFrom(caveMap.start, visited, path, &count)
 	log.Print(count)
 }
 
-func (caveMap *Map) printFrom(cave *Cave, visited map[string]bool, path []string, count *int) {
-	if cave.isSmall() || cave.isStart() || cave.isEnd() {
-		visited[cave.name] = true
+func (caveMap *Map) printFrom(cave *Cave, visited map[string]int, path []string, count *int) {
+	if cave.isStart() || cave.isEnd() {
+		visited[cave.name] = 1
+	} else if cave.isSmall() {
+		value, exists := visited[cave.name]
+
+		if exists {
+			visited[cave.name] = value + 1
+		} else {
+			visited[cave.name] = 1
+		}
 	}
 
 	path = append(path, cave.name)
 
 	if cave.name == "end" {
 		*count += 1
-		log.Print(path)
 	} else {
 		i := 0
 
@@ -136,6 +143,13 @@ func (caveMap *Map) printFrom(cave *Cave, visited map[string]bool, path []string
 
 			if !exists {
 				caveMap.printFrom(adj, visited, path, count)
+			} else {
+				if adj.isStart() || adj.isEnd() || hasTwoVisit(visited) {
+					i += 1
+					continue
+				}
+
+				caveMap.printFrom(adj, visited, path, count)
 			}
 
 			i += 1
@@ -143,5 +157,24 @@ func (caveMap *Map) printFrom(cave *Cave, visited map[string]bool, path []string
 	}
 
 	path = path[:1]
-	delete(visited, cave.name)
+	value, _ := visited[cave.name]
+
+	if value <= 1 {
+		delete(visited, cave.name)
+	} else {
+		visited[cave.name] = value - 1
+	}
+}
+
+func hasTwoVisit(visited map[string]int) bool {
+	for key, value := range visited {
+		if key == "start" || key == "end" {
+			continue
+		}
+
+		if value == 2 {
+			return true
+		}
+	}
+	return false
 }
